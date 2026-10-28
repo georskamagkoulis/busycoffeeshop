@@ -1,44 +1,20 @@
 package gr.skam.busycoffeeshop;
 
-public class Order {
-    private final int orderId;
-    private final Product product;
-    private final int quantity; 
-    private static int orderCounter = 0;
+import java.util.concurrent.atomic.AtomicInteger;
 
-    public Order( Product product, int quantity) {
-        this.orderId = orderCounter++;
-        this.product = product;
-        this.quantity = quantity;
+public record Order(int orderId, Product product, int quantity) {
+
+    private static final AtomicInteger COUNTER = new AtomicInteger(0);
+
+    public static Order create(Product product, int quantity) {
+        return new Order(COUNTER.getAndIncrement(), product, quantity);
     }
 
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "orderId=" + orderId +
-                ", product=" + product +
-                ", quantity=" + quantity +
-                '}';
-    }
-
-   public static  void printMenu() {
+    public static void printMenu() {
         System.out.println("Menu:");
-        System.out.println("1. Freddo Espresso");
-        System.out.println("2. Freddo Cappuccino");
-        System.out.println("3. Frappe");
-        System.out.println("4. Latte");
+        var number = 1;
+        for (var type : CoffeeType.values()) {
+            System.out.println(number++ + ". " + type.getDisplayName());
+        }
     }
-    
 }

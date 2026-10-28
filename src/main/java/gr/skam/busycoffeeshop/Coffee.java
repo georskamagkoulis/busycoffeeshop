@@ -1,44 +1,39 @@
 package gr.skam.busycoffeeshop;
 
-public abstract class Coffee extends Product {
-    private final boolean hasMilk;
-    public enum sugarLevel {NONE,LOW,MEDIUM,HIGH}
-    private final sugarLevel sugar;
+import java.util.Random;
 
-    public Coffee(String name, int preparationTime, double price, int quantity, boolean hasMilk, sugarLevel sugar) {
-        super(name, preparationTime, price, quantity);
-        if (name == null || (!name.equalsIgnoreCase("Freddo Espresso")
-                && !name.equalsIgnoreCase("Freddo Cappuccino")
-                && !name.equalsIgnoreCase("Frappe")
-                && !name.equalsIgnoreCase("Latte"))) {
-            throw new InvalidProductNameException("Invalid coffee name. Please give an appropriate name for the coffee product."
-                    + "\nThe valid coffee names are:\nFreddo Espresso\nFreddo Cappuccino\nFrappe\nLatte.");
+public record Coffee(CoffeeType type, int preparationTime, int quantity,
+                     boolean hasMilk, SugarLevel sugar) implements Product {
+
+    private static final Random RANDOM = new Random();
+
+    // compact constructor: μόνο έλεγχοι, τα πεδία ανατίθενται αυτόματα
+    public Coffee {
+        if (type == null) {
+            throw new InvalidProductNameException("Coffee type cannot be null.");
         }
-        this.hasMilk = hasMilk;
-        this.sugar = sugar;
+        if (quantity < 1) {
+            throw new IllegalArgumentException("Quantity must be at least 1.");
+        }
     }
 
-    public sugarLevel getSugar() {
-        return sugar;
+    // όπως στο αρχικό Product: τυχαίος χρόνος προετοιμασίας 3-5
+    public static Coffee of(CoffeeType type, int quantity, boolean hasMilk, SugarLevel sugar) {
+        return new Coffee(type, RANDOM.nextInt(3, 6), quantity, hasMilk, sugar);
     }
 
     @Override
-    public boolean getDiscount() {
-        if (this.getQuantity() > 10) {
-            return true;
-        }
-        return false;
+    public String name() {
+        return type.getDisplayName();
     }
 
-    @Override 
-    public String toString() {
-        return "Coffee{" +
-                "name='" + getName() + '\'' +
-                ", preparationTime=" + getPreparationTime() +
-                ", price=" + getPrice() +
-                ", quantity=" + getQuantity() +
-                ", hasMilk=" + hasMilk +
-                ", sugar=" + sugar +
-                '}';
+    @Override
+    public double price() {
+        return type.getPrice();
+    }
+
+    @Override
+    public boolean hasDiscount() {
+        return quantity > 10;
     }
 }
