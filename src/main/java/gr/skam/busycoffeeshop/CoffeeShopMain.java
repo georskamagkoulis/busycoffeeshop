@@ -19,18 +19,20 @@ public class CoffeeShopMain {
         }
 
         var board = new OrderBoard();
+        var report = new ShiftReport();
         for (var order : orders) {
             board.add(order);
         }
 
-        var t1 = new Thread(() -> john.work(board));
-        var t2 = new Thread(() -> jane.work(board));
+        var t1 = new Thread(() -> john.work(board, report));
+        var t2 = new Thread(() -> jane.work(board, report));
         t1.start();
         t2.start();
         t1.join();
         t2.join();
 
         Receipt.print(orders);
+        report.print();
         System.out.println("Shop closed");
     }
 }
