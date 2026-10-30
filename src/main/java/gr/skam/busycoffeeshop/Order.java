@@ -12,9 +12,9 @@ public record Order(int orderId, Product product, int quantity) {
 
     public static void printMenu() {
         System.out.println("Menu:");
-        int number = 1;
+        var number = 1;
         for (var type : CoffeeType.values()) {
-            System.out.println(number++ + ". " + type.getDisplayName());
+            System.out.printf("%d. %s - %.2f EUR%n", number++, type.getDisplayName(), type.getPrice());
         }
     }
 }
