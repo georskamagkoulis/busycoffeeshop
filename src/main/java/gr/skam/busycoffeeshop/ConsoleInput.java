@@ -39,7 +39,7 @@ public class ConsoleInput implements AutoCloseable {
                     return value;
                 }
             } catch (NumberFormatException e) {
-                // δεν ήταν αριθμός, ρωτάμε ξανά
+                
             }
             System.out.println("Please enter a number between " + min + " and " + max + ".");
         }
